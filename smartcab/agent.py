@@ -8,7 +8,7 @@ class LearningAgent(Agent):
     """ An agent that learns to drive in the Smartcab world.
         This is the object you will be modifying. """ 
 
-    def __init__(self, env, learning=True, epsilon=1.0, alpha=0.991):
+    def __init__(self, env, learning=True, epsilon=1.0, alpha=0.5):
         super(LearningAgent, self).__init__(env)     # Set the agent in the evironment 
         self.planner = RoutePlanner(self.env, self)  # Create a route planner
         self.valid_actions = self.env.valid_actions  # The set of valid actions
@@ -24,6 +24,7 @@ class LearningAgent(Agent):
         ###########
         # Set any additional class parameters as needed
         self.count = 0
+        self.attenuation = 0.991
 
     def reset(self, destination=None, testing=True):
         """ The reset function is called at the beginning of each trial.
@@ -40,7 +41,7 @@ class LearningAgent(Agent):
             self.epsilon = 0.0
             self.alpha = 0.0
         else:
-            self.epsilon = self.alpha ** self.count
+            self.epsilon = self.attenuation ** self.count
             self.count += 1
 
         return None
@@ -67,7 +68,7 @@ class LearningAgent(Agent):
 
         # Calculate the maximum Q-value of all actions for a given state
 
-        maxQ = max(self.Q[state], key=self.Q[state].get)
+        maxQ = max(self.Q[state].values())
 
         return maxQ 
 
@@ -102,7 +103,7 @@ class LearningAgent(Agent):
             if (random.uniform(0, 1) < self.epsilon):
                 action = random.choice(self.valid_actions)
             else:
-                action = self.get_maxQ(self.state)
+                action = random.choice([key for key,value in self.Q[state].items() if value == self.get_maxQ(self.state)])
 
         else:
             action = random.choice(self.valid_actions)
@@ -178,7 +179,7 @@ def run():
     # Flags:
     #   tolerance  - epsilon tolerance before beginning testing, default is 0.05 
     #   n_test     - discrete number of testing trials to perform, default is 0
-    sim.run(tolerance = 0.01, n_test = 60)
+    sim.run(tolerance = 0.01, n_test = 20)
 
 
 if __name__ == '__main__':
