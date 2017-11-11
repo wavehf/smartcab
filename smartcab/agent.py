@@ -24,8 +24,7 @@ class LearningAgent(Agent):
         ###########
         # Set any additional class parameters as needed
         self.count = 0
-        self.attenuation = 0.991
-
+        # self.attenuation = 0.991
     def reset(self, destination=None, testing=True):
         """ The reset function is called at the beginning of each trial.
             'testing' is set to True if testing trials are being used
@@ -41,7 +40,8 @@ class LearningAgent(Agent):
             self.epsilon = 0.0
             self.alpha = 0.0
         else:
-            self.epsilon = self.attenuation ** self.count
+            # self.epsilon = self.attenuation ** self.count
+            self.epsilon = 1 / (1 + math.exp((self.count - 400) / 20.0))
             self.count += 1
 
         return None
@@ -57,7 +57,7 @@ class LearningAgent(Agent):
         deadline = self.env.get_deadline(self)  # Remaining deadline
 
         # Set 'state' as a tuple of relevant data for the agent        
-        state = (inputs['light'], inputs['oncoming'], inputs['left'], waypoint)
+        state = (inputs['light'], inputs['oncoming'], inputs['left'], inputs['right'], waypoint)
         return state
 
 
@@ -179,7 +179,8 @@ def run():
     # Flags:
     #   tolerance  - epsilon tolerance before beginning testing, default is 0.05 
     #   n_test     - discrete number of testing trials to perform, default is 0
-    sim.run(tolerance = 0.01, n_test = 20)
+    sim.run(tolerance = 0.000000001, n_test = 20)
+    # sim.run(tolerance = 0.001, n_test = 20)
 
 
 if __name__ == '__main__':
