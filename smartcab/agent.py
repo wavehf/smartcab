@@ -41,7 +41,7 @@ class LearningAgent(Agent):
             self.alpha = 0.0
         else:
             # self.epsilon = self.attenuation ** self.count
-            self.epsilon = 1 / (1 + math.exp((self.count - 400) / 20.0))
+            self.epsilon = 1 / (1 + math.exp((self.count - 600) / 20.0))
             self.count += 1
 
         return None
@@ -179,7 +179,7 @@ def run():
     # Flags:
     #   tolerance  - epsilon tolerance before beginning testing, default is 0.05 
     #   n_test     - discrete number of testing trials to perform, default is 0
-    sim.run(tolerance = 0.000000001, n_test = 20)
+    sim.run(tolerance = 0.000000001, n_test = 50)
     # sim.run(tolerance = 0.001, n_test = 20)
 
 
